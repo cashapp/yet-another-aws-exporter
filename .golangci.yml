@@ -1,0 +1,27 @@
+run:
+  tests: false
+  modules-download-mode: readonly
+
+linters:
+  enable-all: true
+  disable:
+  - nlreturn
+  - lll
+  - wsl
+  - typecheck
+  - wrapcheck
+  - testpackage
+  - golint
+  - interfacer
+  - scopelint
+  - paralleltest
+  - gci
+  - maligned
+  - gochecknoglobals
+  - exhaustivestruct
+  - gochecknoinits
+  - gofumpt
+
+output:
+  print-issued-lines: false
+

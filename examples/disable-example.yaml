@@ -1,0 +1,4 @@
+disabledScrapers:
+  - vpcInfo
+  - iamQuotas
+  - iamResourceUsage
