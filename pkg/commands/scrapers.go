@@ -28,25 +28,27 @@ type ScrapersListCmd struct{}
 
 func (cmd *ScrapersListCmd) Run(globals *globals.Globals) error {
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"Scraper ID", "Metric", "Description", "Labels"})
+	table.SetHeader([]string{"Metric", "Description", "Labels", "Scraper ID"})
 	table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
 	table.SetCenterSeparator("|")
 	table.SetAutoWrapText(false)
 
 	for _, scraper := range scrapers.Registry.Scrapers {
-		// Wrap labels in ticks
-		labels := []string{}
-		for _, l := range scraper.Labels {
-			labels = append(labels, wrapInTicks(l))
-		}
+		for _, metric := range scraper.Metrics {
+			// Wrap labels in ticks
+			labels := []string{}
+			for _, l := range metric.Labels {
+				labels = append(labels, wrapInTicks(l))
+			}
 
-		// Append to table.
-		table.Append([]string{
-			wrapInTicks(scraper.ID),
-			wrapInTicks(scraper.PrefixMetricName()),
-			scraper.Description,
-			strings.Join(labels, ","),
-		})
+			// Append to table.
+			table.Append([]string{
+				wrapInTicks(metric.PrefixMetricName()),
+				metric.Description,
+				strings.Join(labels, ","),
+				wrapInTicks(scraper.ID),
+			})
+		}
 	}
 	table.Render() // Send Output
 

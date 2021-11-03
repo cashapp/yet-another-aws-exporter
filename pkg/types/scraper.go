@@ -1,7 +1,6 @@
 package types
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -22,18 +21,15 @@ type ScrapeResult struct {
 // and the logic for how to scrape that metric. There is a one-to-one
 // relationship between the metrics exported and scrapers.
 type Scraper struct {
+	Metrics        map[string]*Metric
 	ID             string
-	Name           string
-	Description    string
-	Labels         []string
 	IamPermissions []string
-	Metric         *prometheus.Desc
-	Fn             func(*session.Session) ([]*ScrapeResult, error)
+	Fn             func(*session.Session) (map[string][]*ScrapeResult, error)
 }
 
 // Scrape invokes invokes the func that retrieves information from AWS
 // and returns a response.
-func (scraper *Scraper) Scrape(sess *session.Session) []*ScrapeResult {
+func (scraper *Scraper) Scrape(sess *session.Session) map[string][]*ScrapeResult {
 	status := "success"
 	start := time.Now()
 
@@ -62,21 +58,18 @@ func (scraper *Scraper) IsEnabled(disabledScrapers []string) bool {
 	return true
 }
 
-// InitializeMetric assigns the Prometheus.Desc pointer to the Metric property.
+// InitializeMetrics assigns the Prometheus.Desc pointer to the Metric property.
 // We do this because once a Desc has been created, all the values are private
 // and we can't render the metadata behind a metric easily. Therefore, a Scraper
 // is created with all the metadata defined and then the Prometheus.Desc is created
 // one the Scraper is registered into the ScrapeRegistry.
-func (scraper *Scraper) InitializeMetric() {
-	scraper.Metric = prometheus.NewDesc(
-		scraper.PrefixMetricName(),
-		scraper.Description,
-		scraper.Labels,
-		nil,
-	)
-}
-
-// PrefixMetricName adds `aws_` to the beginning of every metric name.
-func (scraper *Scraper) PrefixMetricName() string {
-	return fmt.Sprintf("aws_%s", scraper.Name)
+func (scraper *Scraper) InitializeMetrics() {
+	for _, metric := range scraper.Metrics {
+		metric.metric = prometheus.NewDesc(
+			metric.PrefixMetricName(),
+			metric.Description,
+			metric.Labels,
+			nil,
+		)
+	}
 }

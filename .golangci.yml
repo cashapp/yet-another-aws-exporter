@@ -21,7 +21,11 @@ linters:
   - exhaustivestruct
   - gochecknoinits
   - gofumpt
+  - funlen # Scraper functions are sometimes large
 
 output:
   print-issued-lines: false
 
+linters-settings:
+  gofmt:
+    simplify: false # The simplify flag messes up some scraper config
