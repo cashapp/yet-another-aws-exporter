@@ -12,12 +12,15 @@ import (
 	"github.com/cashapp/yet-another-aws-exporter/pkg/types"
 )
 
+// Metric aliases for consistent naming
+const infoMetric = "info"
+
 // New returns an instance of the Scraper.
 func New() *types.Scraper {
 	return &types.Scraper{
 		ID: "eksInfo",
 		Metrics: map[string]*types.Metric{
-			"info": &types.Metric{
+			infoMetric: &types.Metric{
 				Name:        "eks_cluster_info",
 				Description: "The current running EKS clusters in a region",
 				Labels:      []string{"cluster_name", "version", "status"},
@@ -69,7 +72,7 @@ func EksClusterInfo(sess *session.Session) (map[string][]*types.ScrapeResult, er
 		})
 	}
 
-	scrapeResults["info"] = info
+	scrapeResults[infoMetric] = info
 
 	return scrapeResults, nil
 }

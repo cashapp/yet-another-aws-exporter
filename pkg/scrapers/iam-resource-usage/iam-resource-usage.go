@@ -11,17 +11,21 @@ import (
 	"github.com/cashapp/yet-another-aws-exporter/pkg/types"
 )
 
+// Metric aliases for consistent naming
+const usageMetric = "usage"
+const quotasMetric = "quotas"
+
 // New returns an instance of the Scraper.
 func New() *types.Scraper {
 	return &types.Scraper{
 		ID: "iamResourceUsage",
 		Metrics: map[string]*types.Metric{
-			"usage": &types.Metric{
+			usageMetric: &types.Metric{
 				Name:        "iam_resource_usage_total",
 				Description: "The number of IAM resources being used by resource type",
 				Labels:      []string{"resource"},
 			},
-			"quotas": &types.Metric{
+			quotasMetric: &types.Metric{
 				Name:        "iam_resource_quota",
 				Description: "The service quota cap for IAM resources",
 				Labels:      []string{"resource"},
@@ -80,8 +84,8 @@ func IamResourceUsageScrape(sess *session.Session) (map[string][]*types.ScrapeRe
 	}
 
 	// Add to the return struct
-	scrapeResults["usage"] = usage
-	scrapeResults["quotas"] = quotas
+	scrapeResults[usageMetric] = usage
+	scrapeResults[quotasMetric] = quotas
 
 	return scrapeResults, nil
 }

@@ -13,22 +13,27 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// Metric aliases for consistent naming
+const infoMetric = "info"
+const subnetAvailableIpsMetric = "subnetAvailableIps"
+const subnetTotalIpsMetric = "subnetTotalIps"
+
 // New returns an instance of the Scraper.
 func New() *types.Scraper {
 	return &types.Scraper{
 		ID: "vpcInfo",
 		Metrics: map[string]*types.Metric{
-			"info": &types.Metric{
+			infoMetric: &types.Metric{
 				Name:        "vpc_info",
 				Description: "The current running VPCs in a region",
 				Labels:      []string{"vpc_id", "state"},
 			},
-			"subnetAvailableIps": &types.Metric{
+			subnetAvailableIpsMetric: &types.Metric{
 				Name:        "vpc_subnet_ips_available",
 				Description: "The number of IPs available in a subnet",
 				Labels:      []string{"vpc_id", "subnet_id"},
 			},
-			"subnetTotalIps": &types.Metric{
+			subnetTotalIpsMetric: &types.Metric{
 				Name:        "vpc_subnet_ips_capacity",
 				Description: "The total number of available IP addresses in a subnet CIDR",
 				Labels:      []string{"vpc_id", "subnet_id"},
@@ -102,9 +107,9 @@ func VpcInfoScrape(sess *session.Session) (map[string][]*types.ScrapeResult, err
 	}
 
 	// Append results
-	scrapeResults["info"] = info
-	scrapeResults["subnetAvailableIps"] = availableIps
-	scrapeResults["subnetTotalIps"] = totalIps
+	scrapeResults[infoMetric] = info
+	scrapeResults[subnetAvailableIpsMetric] = availableIps
+	scrapeResults[subnetTotalIpsMetric] = totalIps
 
 	return scrapeResults, nil
 }
