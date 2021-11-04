@@ -19,12 +19,15 @@ A Scraper is a struct which contains metadata about a Prometheus metric and a si
 The Scrape Function is the method that will be invoked each time the `/metrics` endpoint receives a request. Here is a simple sample:
 
 ```go
+// Use a const for metric aliases to ensure consistent naming
+const myMetricAlias = "myMetric"
+
 // Assume the following Scraper is initialized
 var (
 	myScraper = &types.Scraper{
 		ID: "vpcInfo",
 		Metrics: map[string]*types.Metric{
-			"myMetricAlias": &types.Metric{
+			myMetricAlias: &types.Metric{
 				Name:        "my_cool_metric_total",
 				Description: "An example",
 				Labels:      []string{"label", "another_label"},
@@ -41,7 +44,7 @@ func ExampleScrape(sess *session.Session) (map[string][]*ScrapeResult, error){
   ...Do some logic...
 
   return map[string][]*ScrapeResult{
-    "myMetricAlias": []*ScrapeResult{
+    myMetricAlias: []*ScrapeResult{
       Type: prometheus.CounterValue,
       Value: float64(1),
       Labels: []string{"labelValue1", "labelValue2"},
