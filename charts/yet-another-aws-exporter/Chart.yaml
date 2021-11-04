@@ -1,0 +1,11 @@
+apiVersion: v2
+name: yaae
+description: A Helm chart for deploying Yet Another AWS Exporter on Kubernetes
+type: application
+
+# The version of this chart
+version: 0.0.1
+
+# Corresponds to the release tag of the application
+# https://github.com/cashapp/yet-another-aws-exporter/releases
+appVersion: v0.0.1

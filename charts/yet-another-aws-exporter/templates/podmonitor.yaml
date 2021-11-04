@@ -1,0 +1,17 @@
+{{- if .Values.prometheus.enabled -}}
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: {{ include "yet-another-aws-exporter.fullname" . }}
+  labels:
+    {{- include "yet-another-aws-exporter.labels" . | nindent 4 }}
+spec:
+  jobLabel: {{ include "yet-another-aws-exporter.fullname" . }}
+  selector:
+    matchLabels:
+      {{- include "yet-another-aws-exporter.selectorLabels" . | nindent 6 }}
+  podMetricsEndpoints:
+  - port: metrics
+    path: /metrics
+    interval: {{ .Values.scapeInterval }} 
+{{- end }}
