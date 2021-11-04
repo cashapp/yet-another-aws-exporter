@@ -13,7 +13,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// Metric aliases for consistent naming
+// Metric aliases for consistent naming.
 const infoMetric = "info"
 const subnetAvailableIpsMetric = "subnetAvailableIps"
 const subnetTotalIpsMetric = "subnetTotalIps"

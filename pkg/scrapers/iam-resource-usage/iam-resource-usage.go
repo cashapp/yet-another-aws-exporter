@@ -11,7 +11,7 @@ import (
 	"github.com/cashapp/yet-another-aws-exporter/pkg/types"
 )
 
-// Metric aliases for consistent naming
+// Metric aliases for consistent naming.
 const usageMetric = "usage"
 const quotasMetric = "quotas"
 

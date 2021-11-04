@@ -12,7 +12,7 @@ import (
 	"github.com/cashapp/yet-another-aws-exporter/pkg/types"
 )
 
-// Metric aliases for consistent naming
+// Metric aliases for consistent naming.
 const infoMetric = "info"
 
 // New returns an instance of the Scraper.
