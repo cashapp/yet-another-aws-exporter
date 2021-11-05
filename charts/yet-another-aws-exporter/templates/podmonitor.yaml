@@ -13,5 +13,5 @@ spec:
   podMetricsEndpoints:
   - port: metrics
     path: /metrics
-    interval: {{ .Values.scapeInterval }} 
+    interval: {{ .Values.scrapeInterval }} 
 {{- end }}

@@ -1,4 +1,5 @@
 replicaCount: 1
+# -- Specify the scraper interval for Prometheus 
 scrapeInterval: 300s
 
 image:
@@ -21,8 +22,7 @@ serviceAccount:
   name: ""
   # Annotations to add to the service account
   annotations:
-    #
-    # Add the full role arn if using OIDC for pod role assumption
+    # -- Add the full role arn if using OIDC for pod role assumption
     eks.amazonaws.com/role-arn: "" 
 
 podAnnotations: {}
@@ -45,6 +45,7 @@ tolerations: []
 
 affinity: {}
 
+# -- A list of scraper IDs to disable in the exporter
 disabledScrapers: []
   # - vpcInfo
 

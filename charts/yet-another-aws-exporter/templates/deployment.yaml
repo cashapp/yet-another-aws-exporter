@@ -39,8 +39,6 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args: 
             - serve
-            - "-l"
-            - "debug"
           ports:
             - name: metrics
               containerPort: 9100
