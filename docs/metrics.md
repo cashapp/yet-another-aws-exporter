@@ -9,16 +9,14 @@ Information around the metrics exported can be found below.
 
 AWS metrics come from [individually configured Scrapers](./scrapers.md). A table of Scrapers and their corresponding timeseries are documented below. 
 
-|      SCRAPER ID      |             METRIC             |                       DESCRIPTION                       |              LABELS               |
-|----------------------|--------------------------------|---------------------------------------------------------|-----------------------------------|
-| `eksInfo`            | `aws_eks_cluster_info`         | The current running EKS clusters in a region            | `cluster_name`,`version`,`status` |
-| `vpcInfo`            | `aws_vpc_info`                 | The current running VPCs in a region                    | `vpc_id`,`state`                  |
-| `subnetAvailableIps` | `aws_vpc_subnet_available_ips` | The number of IPs available in a subnet                 | `vpc_id`,`subnet_id`              |
-| `iamResourceUsage`   | `aws_iam_resource_usage_total` | The number of IAM resources being used by resource type | `resource`                        |
-| `iamQuotas`          | `aws_iam_resource_quota`       | The service quota cap for IAM resources                 | `resource`                        |
-
-
-Not using all of the default scrapers?
+|             METRIC             |                         DESCRIPTION                         |              LABELS               |     SCRAPER ID     |
+|--------------------------------|-------------------------------------------------------------|-----------------------------------|--------------------|
+| `aws_eks_cluster_info`         | The current running EKS clusters in a region                | `cluster_name`,`version`,`status` | `eksInfo`          |
+| `aws_vpc_info`                 | The current running VPCs in a region                        | `vpc_id`,`state`                  | `vpcInfo`          |
+| `aws_vpc_subnet_ips_available` | The number of IPs available in a subnet                     | `vpc_id`,`subnet_id`              | `vpcInfo`          |
+| `aws_vpc_subnet_ips_capacity`  | The total number of available IP addresses in a subnet CIDR | `vpc_id`,`subnet_id`              | `vpcInfo`          |
+| `aws_iam_resource_usage_total` | The number of IAM resources being used by resource type     | `resource`                        | `iamResourceUsage` |
+| `aws_iam_resource_quota`       | The service quota cap for IAM resources                     | `resource`                        | `iamResourceUsage` |
 
 ## Internal Metrics
 

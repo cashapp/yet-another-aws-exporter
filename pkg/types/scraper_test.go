@@ -19,38 +19,40 @@ var (
 	}
 )
 
-func errScrape(sess *session.Session) ([]*ScrapeResult, error) {
+func errScrape(sess *session.Session) (map[string][]*ScrapeResult, error) {
 	var err = errors.New("Scrape error")
-	return []*ScrapeResult{}, err
+	return map[string][]*ScrapeResult{}, err
 }
 
-func successScrape(sess *session.Session) ([]*ScrapeResult, error) {
-	return []*ScrapeResult{successResult}, nil
+func successScrape(sess *session.Session) (map[string][]*ScrapeResult, error) {
+	return map[string][]*ScrapeResult{
+		"example": []*ScrapeResult{successResult},
+	}, nil
 }
 
 func TestScraper_Scrape(t *testing.T) {
 	tests := []struct {
 		name string
 		s    *Scraper
-		want []*ScrapeResult
+		want map[string][]*ScrapeResult
 	}{
 		{
 			name: "success",
 			s: &Scraper{
-				Name:        "test",
-				Description: "Description",
-				Fn:          successScrape,
+				ID: "success",
+				Fn: successScrape,
 			},
-			want: []*ScrapeResult{successResult},
+			want: map[string][]*ScrapeResult{
+				"example": []*ScrapeResult{successResult},
+			},
 		},
 		{
 			name: "error",
 			s: &Scraper{
-				Name:        "test",
-				Description: "Description",
-				Fn:          errScrape,
+				ID: "error",
+				Fn: errScrape,
 			},
-			want: []*ScrapeResult{},
+			want: map[string][]*ScrapeResult{},
 		},
 	}
 	for _, tt := range tests {
@@ -73,10 +75,8 @@ func TestScraper_IsEnabled(t *testing.T) {
 		{
 			name: "returns true for scraper not in the disabled list",
 			scraper: &Scraper{
-				ID:          "foo",
-				Name:        "foo",
-				Description: "Foo description",
-				Fn:          successScrape,
+				ID: "foo",
+				Fn: successScrape,
 			},
 			disabledScrapers: []string{"bar"},
 			want:             true,
@@ -84,10 +84,8 @@ func TestScraper_IsEnabled(t *testing.T) {
 		{
 			name: "returns false for scraper in the disabled list",
 			scraper: &Scraper{
-				ID:          "foo",
-				Name:        "foo",
-				Description: "Foo description",
-				Fn:          successScrape,
+				ID: "foo",
+				Fn: successScrape,
 			},
 			disabledScrapers: []string{"foo"},
 			want:             false,
@@ -110,39 +108,24 @@ func TestScraper_InitializeMetric(t *testing.T) {
 		{
 			name: "creates a Prometheus metric for a configured scraper",
 			scraper: &Scraper{
-				ID:          "foo",
-				Name:        "foo",
-				Description: "Foo description",
-				Fn:          successScrape,
+				ID: "foo",
+				Metrics: map[string]*Metric{
+					"example": &Metric{
+						Name:        "foo_metric",
+						Description: "Foo description",
+						Labels:      nil,
+					},
+				},
+				Fn: successScrape,
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			tt.scraper.InitializeMetric()
-			assert.NotNil(t, tt.scraper.Metric)
-		})
-	}
-}
+			tt.scraper.InitializeMetrics()
 
-func TestScraper_PrefixMetricName(t *testing.T) {
-	tests := []struct {
-		name    string
-		scraper *Scraper
-		want    string
-	}{
-		{
-			name: "Adds `aws_` prefix to scraper names",
-			scraper: &Scraper{
-				Name: "foo",
-			},
-			want: "aws_foo",
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.scraper.PrefixMetricName(); got != tt.want {
-				t.Errorf("Scraper.PrefixMetricName() = %v, want %v", got, tt.want)
+			for _, m := range tt.scraper.Metrics {
+				assert.NotNil(t, m.metric)
 			}
 		})
 	}

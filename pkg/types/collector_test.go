@@ -10,10 +10,14 @@ import (
 
 var (
 	goodScraper = &Scraper{
-		ID:          "good",
-		Name:        "foo",
-		Description: "Foo description",
-		Fn:          successScrape,
+		ID: "good",
+		Metrics: map[string]*Metric{
+			"example": &Metric{
+				Name:        "foo",
+				Description: "Foo description",
+			},
+		},
+		Fn: successScrape,
 	}
 )
 
@@ -24,7 +28,7 @@ func restoreEnvFn(envVars map[string]string) {
 }
 
 func TestCollector_Describe(t *testing.T) {
-	goodScraper.InitializeMetric()
+	goodScraper.InitializeMetrics()
 
 	tests := []struct {
 		name string

@@ -19,7 +19,9 @@ type Collector struct {
 // https://pkg.go.dev/github.com/prometheus/client_golang/prometheus#Collector
 func (c *Collector) Describe(ch chan<- *prometheus.Desc) {
 	for _, scraper := range c.Scrapers {
-		ch <- scraper.Metric
+		for _, metric := range scraper.Metrics {
+			ch <- metric.metric
+		}
 	}
 }
 
@@ -51,8 +53,10 @@ func (c *Collector) Collect(ch chan<- prometheus.Metric) {
 			scrapeResults := scraper.Scrape(sess)
 
 			// Iterate through scrape results and send the metric
-			for _, result := range scrapeResults {
-				ch <- prometheus.MustNewConstMetric(scraper.Metric, result.Type, result.Value, result.Labels...)
+			for key, results := range scrapeResults {
+				for _, result := range results {
+					ch <- prometheus.MustNewConstMetric(scraper.Metrics[key].metric, result.Type, result.Value, result.Labels...)
+				}
 			}
 			log.Debugf("Scrape completed: %s", scraper.ID)
 		}(scraper)

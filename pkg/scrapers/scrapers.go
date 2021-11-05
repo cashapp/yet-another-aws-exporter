@@ -3,9 +3,7 @@ package scrapers
 import (
 	"github.com/cashapp/yet-another-aws-exporter/pkg/config"
 	eksinfo "github.com/cashapp/yet-another-aws-exporter/pkg/scrapers/eks-info"
-	iamquotas "github.com/cashapp/yet-another-aws-exporter/pkg/scrapers/iam-quotas"
 	iamresourceusage "github.com/cashapp/yet-another-aws-exporter/pkg/scrapers/iam-resource-usage"
-	subnetavailableips "github.com/cashapp/yet-another-aws-exporter/pkg/scrapers/subnet-available-ips"
 	vpcinfo "github.com/cashapp/yet-another-aws-exporter/pkg/scrapers/vpc-info"
 	"github.com/cashapp/yet-another-aws-exporter/pkg/types"
 	log "github.com/sirupsen/logrus"
@@ -16,9 +14,7 @@ import (
 func init() {
 	Registry.Add(eksinfo.New())
 	Registry.Add(vpcinfo.New())
-	Registry.Add(subnetavailableips.New())
 	Registry.Add(iamresourceusage.New())
-	Registry.Add(iamquotas.New())
 }
 
 var (
@@ -36,7 +32,7 @@ type ScraperRegistry struct {
 // Add appends a Scraper to the Scrapers slice on the registry.
 func (sr *ScraperRegistry) Add(s *types.Scraper) {
 	// Initialize the Prometheus metric pointer
-	s.InitializeMetric()
+	s.InitializeMetrics()
 	// Append initialized scraper to the slice of all scrapers
 	sr.Scrapers = append(sr.Scrapers, s)
 }

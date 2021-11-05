@@ -18,9 +18,13 @@ func TestScraperRegistry_Add(t *testing.T) {
 		{
 			name: "adds a scraper to the global registry and calls InitializeMetric",
 			scraper: &types.Scraper{
-				ID:          "foo",
-				Name:        "foo",
-				Description: "Foo description",
+				ID: "foo",
+				Metrics: map[string]*types.Metric{
+					"example": &types.Metric{
+						Name:        "foo",
+						Description: "Foo description",
+					},
+				},
 			},
 		},
 	}
@@ -29,9 +33,8 @@ func TestScraperRegistry_Add(t *testing.T) {
 			sr := &ScraperRegistry{}
 			sr.Add(tt.scraper)
 
+			// Ensure it got registered into the global registry
 			assert.Equal(t, len(sr.Scrapers), 1)
-			// Assert that the initialize function was called during adding
-			assert.NotNil(t, sr.Scrapers[0].Metric)
 		})
 	}
 }

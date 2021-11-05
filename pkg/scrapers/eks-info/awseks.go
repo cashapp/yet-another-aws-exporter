@@ -12,13 +12,20 @@ import (
 	"github.com/cashapp/yet-another-aws-exporter/pkg/types"
 )
 
+// Metric aliases for consistent naming.
+const infoMetric = "info"
+
 // New returns an instance of the Scraper.
 func New() *types.Scraper {
 	return &types.Scraper{
-		ID:          "eksInfo",
-		Name:        "eks_cluster_info",
-		Description: "The current running EKS clusters in a region",
-		Labels:      []string{"cluster_name", "version", "status"},
+		ID: "eksInfo",
+		Metrics: map[string]*types.Metric{
+			infoMetric: &types.Metric{
+				Name:        "eks_cluster_info",
+				Description: "The current running EKS clusters in a region",
+				Labels:      []string{"cluster_name", "version", "status"},
+			},
+		},
 		IamPermissions: []string{
 			"eks:DescribeCluster",
 			"eks:ListClusters",
@@ -30,8 +37,9 @@ func New() *types.Scraper {
 // EksClusterInfo scrapes the basic information about EKS clusters in a region. The value
 // of the metric will always be 1, but the labels will include information about cluster name,
 // Kubernetes versiona and whether or not the cluster is active.
-func EksClusterInfo(sess *session.Session) ([]*types.ScrapeResult, error) {
-	scrapeResults := []*types.ScrapeResult{}
+func EksClusterInfo(sess *session.Session) (map[string][]*types.ScrapeResult, error) {
+	scrapeResults := map[string][]*types.ScrapeResult{}
+	info := []*types.ScrapeResult{}
 	client := eks.New(sess)
 
 	clusters, err := client.ListClusters(&eks.ListClustersInput{})
@@ -57,12 +65,14 @@ func EksClusterInfo(sess *session.Session) ([]*types.ScrapeResult, error) {
 			metricVal = 0
 		}
 
-		scrapeResults = append(scrapeResults, &types.ScrapeResult{
+		info = append(info, &types.ScrapeResult{
 			Labels: []string{*c.Cluster.Name, *c.Cluster.Version, strings.ToLower(*c.Cluster.Status)},
 			Value:  float64(metricVal),
 			Type:   prometheus.GaugeValue,
 		})
 	}
+
+	scrapeResults[infoMetric] = info
 
 	return scrapeResults, nil
 }
