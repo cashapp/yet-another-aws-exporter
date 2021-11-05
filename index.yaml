@@ -3,6 +3,16 @@ entries:
   yaae:
   - apiVersion: v2
     appVersion: v0.0.1
+    created: "2021-11-05T15:48:41.002038732Z"
+    description: A Helm chart for deploying Yet Another AWS Exporter on Kubernetes
+    digest: 1476dba1962b21e2f06c6c83e688e6563c2c200a21d1a9605c8fc09cb9b42808
+    name: yaae
+    type: application
+    urls:
+    - https://github.com/cashapp/yet-another-aws-exporter/releases/download/yaae-0.0.2/yaae-0.0.2.tgz
+    version: 0.0.2
+  - apiVersion: v2
+    appVersion: v0.0.1
     created: "2021-11-04T22:25:20.281326213Z"
     description: A Helm chart for deploying Yet Another AWS Exporter on Kubernetes
     digest: a59dde77bd91799d63862ef0e4a8c67e6bcd9554cbed611c696e341a4a20de1e
@@ -11,4 +21,4 @@ entries:
     urls:
     - https://github.com/cashapp/yet-another-aws-exporter/releases/download/yaae-0.0.1/yaae-0.0.1.tgz
     version: 0.0.1
-generated: "2021-11-04T22:25:20.281335813Z"
+generated: "2021-11-05T15:48:41.002049332Z"
