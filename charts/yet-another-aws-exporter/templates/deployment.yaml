@@ -53,6 +53,19 @@ spec:
               port: metrics
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          {{- if gt (len .Values.disabledScrapers) 0 }}
+          volumeMounts:
+            - name: yaae-config
+              mountPath: /exporter/
+              readOnly: true
+          {{- end }}
+      {{- if gt (len .Values.disabledScrapers) 0 }}
+      volumes:
+        - name: yaae-config
+          configMap:
+            name: {{ include "yet-another-aws-exporter.fullname" . }}-config
+            defaultMode: 420
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
